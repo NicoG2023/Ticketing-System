@@ -1,8 +1,10 @@
 package com.nicog.inventoryservice.service;
 
 import com.nicog.inventoryservice.entity.Event;
+import com.nicog.inventoryservice.entity.Venue;
 import com.nicog.inventoryservice.repository.EventRepository;
 import com.nicog.inventoryservice.repository.VenueRepository;
+import com.nicog.inventoryservice.response.VenueInventoryResponse;
 import org.springframework.stereotype.Service;
 import com.nicog.inventoryservice.response.EventInventoryResponse;
 
@@ -21,12 +23,26 @@ public class InventoryService {
     }
 
     public List<EventInventoryResponse> getAllEvents(){
-        final List<Event> events = eventRepository.findAll();
+        final List<Event> events = eventRepository.findAll(); //Se devuelve una lista de objetos Event
 
+        //el .stream convierte la lista en un flujo de elementos para poder procesarlos uno a uno
+        //el .map toma cada elemento y lo transforma. Cada Event se convierte en un EventInventoryResponse
+        //el .collect junta todos esos resultados y los mete en una List
         return events.stream().map(event -> EventInventoryResponse.builder().event(event.getName())
                 .capacity(event.getLeftCapacity())
                 .venue(event.getVenue())
                 .build()).collect(Collectors.toList());
+    }
+
+    public VenueInventoryResponse getVenueInformation(final Long venueId){
+        final Venue venue = venueRepository.findById(venueId).orElse(null); //el findById devuelve un Optional<Venue>
+
+        //como no se trabaja con lista, sino con un objeto, se hace conversion directa de Venue a VenueInventoryResponse
+        return VenueInventoryResponse.builder()
+                .venueId(venue.getId())
+                .venueName(venue.getName())
+                .totalCapacity(venue.getTotalCapacity())
+                .build();
     }
     
 }

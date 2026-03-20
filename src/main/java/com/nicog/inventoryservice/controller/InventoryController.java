@@ -2,6 +2,8 @@ package com.nicog.inventoryservice.controller;
 
 import java.util.List;
 
+import com.nicog.inventoryservice.response.VenueInventoryResponse;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,6 +33,10 @@ public class InventoryController {
     public List<EventInventoryResponse> inventoryGetAllEvents () {
         return inventoryService.getAllEvents();
     }
-    
+
+    @GetMapping("/inventory/venue/{venueId}")
+    public VenueInventoryResponse inventoryByVenueId(@PathVariable Long venueId){
+        return inventoryService.getVenueInformation(venueId);
+    }
 
 }
